@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail pizza</title>
+</head>
+<body>
+<a href="/">Accueil</a>
+<a href="/add">Ajouter</a>
+
+<input type="hidden" name="nomPizza" id="idPizza" data-th-value="${pizza.id}">
+
+<div>
+    <label>Nom :</label>
+    <input type="text" name="nomPizza" id="nomPizza" data-th-value="${pizza.nom}">
+</div>
+
+<div>
+    <label>description :</label>
+    <input type="text" name="descriptionPizza" id="descriptionPizza" data-th-value="${pizza.description}">
+</div>
+<div>   <label>Image :</label>
+    <input type="text" name="imagePizza" id="imagePizza" data-th-value="${pizza.image}">
+</div>
+ <div>    <label>Prix :</label>
+     <input type="number" name="prixPizza" id="prixPizza" data-th-value="${pizza.prix}">
+ </div>
+
+
+<input type="button" value="modifier" onclick="modifier()">
+
+<script>
+    function modifier()
+    {
+        let id = document.getElementById("idPizza").value
+        let nom = document.getElementById("nomPizza").value
+        let description = document.getElementById("descriptionPizza").value
+        let image = document.getElementById("imagePizza").value
+        let prix = document.getElementById("prixPizza").value
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let body = {
+            "id" : id,
+            "nom" : nom,
+            "description" : description,
+            "image" : image,
+            "prix" : prix
+        }
+
+        var requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: JSON.stringify(body),
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:8080/rest/pizza/"+id, requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+</script>
+
+</body>
+</html>

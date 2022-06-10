@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Appli crayons</title>
+</head>
+<body>
+<a href="/">Accueil</a>
+<a href="/add">Ajouter</a>
+
+	<div>
+		<input type="button" value="Lister" onclick="lister()" />
+	</div>
+
+	<ul id="listPizzas"></ul>
+
+
+	<div id="succes" style="color:green"></div>
+	
+	<div id="echec" style="color:red"></div>
+
+
+<script type="text/javascript">
+	function createXHR() {
+	    if (window.XMLHttpRequest)    //  Objet standard
+	    {
+	        xhr = new XMLHttpRequest();     //  Firefox, Safari, ...
+	    }
+	    else if (window.ActiveXObject)      //  Internet Explorer
+	    {
+	        xhr = new ActiveXObject("Msxml2.XMLHTTP");
+	    }
+	    
+	    xhr.onreadystatechange = function()
+	    {
+	        if (xhr.readyState == 4)
+	        {
+	            if (xhr.status == 200)
+	            {
+	            	succes(xhr.responseText);//xhr.responseXML si réponse au format XML
+	            }
+	            else
+	            {
+	                echec(xhr.status, xhr.responseText);
+	            }
+	        }
+	    };
+	    return xhr;
+	}
+
+
+
+	
+	function supprimer(id)
+	{
+		var requestOptions = {
+			method: 'DELETE',
+			redirect: 'follow'
+		};
+
+		fetch("http://localhost:8080/rest/pizza/"+id, requestOptions)
+				.then(response => response.text())
+				.then(result => console.log(result))
+				.catch(error => console.log('error', error));
+		document.getElementById("li"+id).remove()
+	}
+	
+	function lister()
+	{
+		var requestOptions = {
+			method: 'GET',
+			redirect: 'follow'
+		};
+
+		let pizzas = fetch("http://localhost:8080/rest/pizzas", requestOptions)
+				.then(response => response.json())
+				.then(result =>	listPizzas(result))
+				.catch(error => console.log('error', error));
+
+	}
+
+	function listPizzas(data) {
+		const ul = document.getElementById("listPizzas")
+		for (let i = 0; i < data.length; i++) {
+			let li = document.createElement("li");
+			let a = document.createElement("a");
+			let btnDelete = document.createElement("input")
+			li.id = "li"+data[i].id
+			a.text = data[i].nom
+			a.href = 'detail/'+data[i].id
+			btnDelete.type = "button"
+			btnDelete.setAttribute("onclick", "supprimer("+data[i].id+")");
+			btnDelete.value = "supprimer"
+			btnDelete.id = data[i].id
+			li.appendChild(a);
+			li.appendChild(btnDelete)
+			ul.appendChild(li);
+		}
+	}
+	
+	function succes(reponse)
+	{
+		document.getElementById("succes").innerHTML=reponse;
+		document.getElementById("echec").innerHTML="";
+	}
+	
+	function echec(codeReponse, reponse)
+	{
+		document.getElementById("echec").innerHTML=reponse;
+		document.getElementById("succes").innerHTML="";
+	}
+	
+	</script>
+</body>
+</html>

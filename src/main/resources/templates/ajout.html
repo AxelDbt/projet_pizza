@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajout</title>
+</head>
+<body>
+<a href="/">Accueil</a>
+<a href="/add">Ajouter</a>
+
+<div>
+    <label>Nom :</label>
+    <input type="text" name="nomPizza" id="nomPizza" >
+</div>
+
+<div>
+    <label>description :</label>
+    <input type="text" name="descriptionPizza" id="descriptionPizza">
+</div>
+<div>   <label>Image :</label>
+    <input type="text" name="imagePizza" id="imagePizza" >
+</div>
+<div>    <label>Prix :</label>
+    <input type="number" name="prixPizza" id="prixPizza">
+</div>
+
+
+<input type="button" value="ajouter" onclick="ajouter()">
+
+<script>
+    function ajouter()
+    {
+        let nom = document.getElementById("nomPizza").value
+        let description = document.getElementById("descriptionPizza").value
+        let image = document.getElementById("imagePizza").value
+        let prix = document.getElementById("prixPizza").value
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let body = {
+            "id" : 0,
+            "nom" : nom,
+            "description" : description,
+            "image" : image,
+            "prix" : prix
+        }
+        console.log(body)
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(body),
+            redirect: 'follow'
+        };
+
+        fetch("http://localhost:8080/rest/pizza/", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
+</script>
+
+</body>
+</html>
